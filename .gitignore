@@ -36,3 +36,4 @@ yarn-error.log
 .ai-devkit.json
 .claude/
 docs/
+api-gateway/package-lock.json
