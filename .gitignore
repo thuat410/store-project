@@ -28,9 +28,9 @@ yarn-error.log
 !.vscode/extensions.json
 
 # Environment Variables
-.env
-.env.test
-.env.production
+*.env
+*.env.test
+*.env.production
 
 # AI Dev Tools
 .ai-devkit.json
