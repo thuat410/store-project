@@ -74,5 +74,9 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "overrides": {
+    "serialize-javascript": "7.0.3",
+    "ajv": "^8.17.1"
   }
 }
