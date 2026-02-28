@@ -31,3 +31,8 @@ yarn-error.log
 .env
 .env.test
 .env.production
+
+# AI Dev Tools
+.ai-devkit.json
+.claude/
+docs/
