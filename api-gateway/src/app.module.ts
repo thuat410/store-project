@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { NatsModule } from './nats/nats.module';
 import { RedisCacheModule } from './redis-cache/redis-cache.module';
+import { VoucherModule } from './voucher/voucher.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { RedisCacheModule } from './redis-cache/redis-cache.module';
     }),
     NatsModule,
     RedisCacheModule,
+    VoucherModule,
   ],
   controllers: [AppController],
   providers: [AppService],
