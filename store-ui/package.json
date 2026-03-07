@@ -9,16 +9,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.5.29",
-    "vue-router": "^5.0.3",
-    "pinia": "^3.0.4",
-    "axios": "^1.13.6",
     "@heroicons/vue": "^2.2.0",
-    "swiper": "^12.1.2"
+    "axios": "^1.13.6",
+    "pinia": "^3.0.4",
+    "swiper": "^12.1.2",
+    "vue": "^3.5.29",
+    "vue-router": "^5.0.3"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.2.1",
     "@vitejs/plugin-vue": "^6.0.4",
-    "autoprefixer": "^10.4.27",
     "postcss": "^8.5.8",
     "tailwindcss": "^4.2.1",
     "vite": "^7.3.1"
