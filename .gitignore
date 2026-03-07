@@ -36,3 +36,4 @@ yarn-error.log
 .ai-devkit.json
 docs/
 api-gateway/package-lock.json
+store-ui/package-lock.json
