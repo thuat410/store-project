@@ -1,18 +1,20 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 const router = useRouter()
+const { t } = useI18n()
 
-const slides = [
+const slides = computed(() => [
   {
     id: 1,
-    title: 'Fresh Groceries',
-    subtitle: 'Delivered to Your Door',
-    description: 'Shop from thousands of fresh products. Same-day delivery available.',
-    cta: 'Shop Now',
+    title: t('sections.hero.slide1Title'),
+    subtitle: t('sections.hero.slide1Subtitle'),
+    description: t('sections.hero.slide1Desc'),
+    cta: t('sections.hero.slide1Cta'),
     ctaLink: '/products',
-    badge: 'Free Delivery on $50+',
+    badge: t('sections.hero.slide1Badge'),
     bgFrom: 'from-green-600',
     bgTo: 'to-green-800',
     accentColor: 'text-yellow-300',
@@ -21,12 +23,12 @@ const slides = [
   },
   {
     id: 2,
-    title: 'Organic Farm',
-    subtitle: 'Fresh Produce',
-    description: 'Certified organic fruits and vegetables straight from local farms.',
-    cta: 'Explore Organic',
+    title: t('sections.hero.slide2Title'),
+    subtitle: t('sections.hero.slide2Subtitle'),
+    description: t('sections.hero.slide2Desc'),
+    cta: t('sections.hero.slide2Cta'),
     ctaLink: '/products?category=fruits',
-    badge: 'Up to 25% Off Organic',
+    badge: t('sections.hero.slide2Badge'),
     bgFrom: 'from-orange-500',
     bgTo: 'to-orange-700',
     accentColor: 'text-yellow-200',
@@ -35,19 +37,19 @@ const slides = [
   },
   {
     id: 3,
-    title: 'Flash Sale',
-    subtitle: 'Up to 50% Off!',
-    description: 'Limited time deals on your favorite grocery items. Don\'t miss out!',
-    cta: 'See Flash Deals',
+    title: t('sections.hero.slide3Title'),
+    subtitle: t('sections.hero.slide3Subtitle'),
+    description: t('sections.hero.slide3Desc'),
+    cta: t('sections.hero.slide3Cta'),
     ctaLink: '/products?sort=discount',
-    badge: 'Today Only',
+    badge: t('sections.hero.slide3Badge'),
     bgFrom: 'from-blue-600',
     bgTo: 'to-purple-700',
     accentColor: 'text-yellow-300',
     image: 'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=600&h=400&fit=crop',
     pattern: 'stripes'
   }
-]
+])
 
 const currentSlide = ref(0)
 let autoplayTimer = null
@@ -58,18 +60,18 @@ function goToSlide(index) {
 }
 
 function prevSlide() {
-  currentSlide.value = (currentSlide.value - 1 + slides.length) % slides.length
+  currentSlide.value = (currentSlide.value - 1 + slides.value.length) % slides.value.length
   resetAutoplay()
 }
 
 function nextSlide() {
-  currentSlide.value = (currentSlide.value + 1) % slides.length
+  currentSlide.value = (currentSlide.value + 1) % slides.value.length
   resetAutoplay()
 }
 
 function startAutoplay() {
   autoplayTimer = setInterval(() => {
-    currentSlide.value = (currentSlide.value + 1) % slides.length
+    currentSlide.value = (currentSlide.value + 1) % slides.value.length
   }, 5000)
 }
 
@@ -147,7 +149,7 @@ onUnmounted(() => {
                   @click="navigateTo('/products')"
                   class="border border-white/40 text-white font-medium px-5 py-3 rounded-xl hover:bg-white/10 transition-colors duration-200"
                 >
-                  View All
+                  {{ t('sections.hero.viewAll') }}
                 </button>
               </div>
             </div>

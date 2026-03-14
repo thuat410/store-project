@@ -1,13 +1,17 @@
 <script setup>
+import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
-const promos = [
+const { t } = useI18n()
+
+const promos = computed(() => [
   {
     id: 1,
-    title: 'Fresh Vegetables',
-    subtitle: 'Farm to Table',
-    description: 'Get the freshest organic vegetables delivered daily',
-    discount: 'Up to 30% Off',
+    title: t('sections.promo.promo1Title'),
+    subtitle: t('sections.promo.promo1Subtitle'),
+    description: t('sections.promo.promo1Desc'),
+    discount: t('sections.promo.promo1Discount'),
     link: '/products?category=vegetables',
     image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&h=300&fit=crop',
     bgColor: 'bg-green-600',
@@ -16,10 +20,10 @@ const promos = [
   },
   {
     id: 2,
-    title: 'Organic Fruits',
-    subtitle: 'Nature\'s Best',
-    description: 'Sweet and nutritious organic fruits for your family',
-    discount: 'From $1.99',
+    title: t('sections.promo.promo2Title'),
+    subtitle: t('sections.promo.promo2Subtitle'),
+    description: t('sections.promo.promo2Desc'),
+    discount: t('sections.promo.promo2Discount'),
     link: '/products?category=fruits',
     image: 'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=500&h=300&fit=crop',
     bgColor: 'bg-orange-500',
@@ -28,17 +32,24 @@ const promos = [
   },
   {
     id: 3,
-    title: 'Dairy Products',
-    subtitle: 'Pure & Natural',
-    description: 'Premium dairy from grass-fed cows, rich in nutrients',
-    discount: 'New Arrivals',
+    title: t('sections.promo.promo3Title'),
+    subtitle: t('sections.promo.promo3Subtitle'),
+    description: t('sections.promo.promo3Desc'),
+    discount: t('sections.promo.promo3Discount'),
     link: '/products?category=dairy',
     image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500&h=300&fit=crop',
     bgColor: 'bg-blue-600',
     textColor: 'text-white',
     buttonClass: 'bg-white text-blue-700 hover:bg-blue-50'
   }
-]
+])
+
+const features = computed(() => [
+  { icon: '🚚', title: t('sections.promo.freeDelivery'), desc: t('sections.promo.freeDeliveryDesc') },
+  { icon: '🔒', title: t('sections.promo.securePayment'), desc: t('sections.promo.securePaymentDesc') },
+  { icon: '↩️', title: t('sections.promo.easyReturns'), desc: t('sections.promo.easyReturnsDesc') },
+  { icon: '🌿', title: t('sections.promo.freshGuarantee'), desc: t('sections.promo.freshGuaranteeDesc') }
+])
 </script>
 
 <template>
@@ -46,8 +57,8 @@ const promos = [
     <div class="container-custom">
       <!-- Section header -->
       <div class="text-center mb-8">
-        <h2 class="section-title">Special Offers</h2>
-        <p class="text-gray-500 mt-2">Exclusive deals handpicked for our valued customers</p>
+        <h2 class="section-title">{{ t('sections.promo.title') }}</h2>
+        <p class="text-gray-500 mt-2">{{ t('sections.promo.subtitle') }}</p>
       </div>
 
       <!-- Promo grid -->
@@ -85,7 +96,7 @@ const promos = [
               :to="promo.link"
               :class="['inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-colors duration-200 self-start', promo.buttonClass]"
             >
-              Shop Now
+              {{ t('sections.promo.shopNow') }}
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
               </svg>
@@ -97,12 +108,7 @@ const promos = [
       <!-- Features row -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
         <div
-          v-for="feature in [
-            { icon: '🚚', title: 'Free Delivery', desc: 'Orders over $50' },
-            { icon: '🔒', title: 'Secure Payment', desc: '100% protected' },
-            { icon: '↩️', title: 'Easy Returns', desc: '30-day policy' },
-            { icon: '🌿', title: 'Fresh Guarantee', desc: 'Or money back' }
-          ]"
+          v-for="feature in features"
           :key="feature.title"
           class="bg-white rounded-xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow duration-200"
         >

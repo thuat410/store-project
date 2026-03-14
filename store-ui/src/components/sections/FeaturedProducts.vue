@@ -1,20 +1,22 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import ProductCard from '@/components/ui/ProductCard.vue'
 import { useProducts } from '@/composables/useProducts'
 
+const { t } = useI18n()
 const { featured, loadingFeatured, loadFeatured } = useProducts()
 
 const activeTab = ref('all')
 
-const tabs = [
-  { key: 'all', label: 'All' },
-  { key: 'fruits', label: 'Fruits' },
-  { key: 'vegetables', label: 'Vegetables' },
-  { key: 'dairy', label: 'Dairy' },
-  { key: 'bakery', label: 'Bakery' }
-]
+const tabs = computed(() => [
+  { key: 'all', label: t('products.categories.all').split(' ')[0] },
+  { key: 'fruits', label: t('products.categories.fruits') },
+  { key: 'vegetables', label: t('products.categories.vegetables') },
+  { key: 'dairy', label: t('products.categories.dairy') },
+  { key: 'bakery', label: t('products.categories.bakery') }
+])
 
 const filteredProducts = computed(() => {
   if (activeTab.value === 'all') return featured.value
@@ -32,14 +34,14 @@ onMounted(() => {
       <!-- Section header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 class="section-title">Featured Products</h2>
-          <p class="text-gray-500 mt-1">Handpicked fresh products just for you</p>
+          <h2 class="section-title">{{ t('sections.featured.title') }}</h2>
+          <p class="text-gray-500 mt-1">{{ t('sections.featured.subtitle') }}</p>
         </div>
         <RouterLink
           to="/products"
           class="inline-flex items-center gap-1 text-primary-600 hover:text-primary-700 font-medium text-sm border border-primary-600 px-4 py-2 rounded-lg hover:bg-primary-50 transition-colors duration-200"
         >
-          View All Products
+          {{ t('sections.featured.viewAll') }}
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
           </svg>
@@ -86,8 +88,8 @@ onMounted(() => {
           />
         </div>
         <div v-else class="text-center py-16 text-gray-400">
-          <p class="text-lg">No featured products in this category yet.</p>
-          <RouterLink to="/products" class="text-primary-600 hover:underline mt-2 inline-block">Browse All Products</RouterLink>
+          <p class="text-lg">{{ t('sections.featured.viewAll') }}</p>
+          <RouterLink to="/products" class="text-primary-600 hover:underline mt-2 inline-block">{{ t('sections.featured.viewAll') }}</RouterLink>
         </div>
       </div>
     </div>

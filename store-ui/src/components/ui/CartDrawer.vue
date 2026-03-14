@@ -1,6 +1,9 @@
 <script setup>
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useCart } from '@/composables/useCart'
+
+const { t } = useI18n()
 import QuantitySelector from './QuantitySelector.vue'
 
 const {
@@ -107,7 +110,7 @@ function handleImageError(e) {
             <div class="flex-shrink-0 w-16 h-16 bg-white rounded-lg overflow-hidden border border-gray-100">
               <img
                 :src="item.image"
-                :alt="item.name"
+                :alt="item.nameKey ? t(item.nameKey) : item.name"
                 class="w-full h-full object-cover"
                 @error="handleImageError"
               />
@@ -115,7 +118,7 @@ function handleImageError(e) {
 
             <!-- Info -->
             <div class="flex-1 min-w-0">
-              <p class="font-medium text-gray-900 text-sm line-clamp-1">{{ item.name }}</p>
+              <p class="font-medium text-gray-900 text-sm line-clamp-1">{{ item.nameKey ? t(item.nameKey) : item.name }}</p>
               <p class="text-xs text-gray-500">{{ item.unit }}</p>
 
               <!-- Quantity & price row -->

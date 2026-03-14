@@ -1,9 +1,11 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import ProductCard from '@/components/ui/ProductCard.vue'
 import { useProducts } from '@/composables/useProducts'
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 
@@ -29,39 +31,39 @@ const localCategory = ref('all')
 const localSort = ref('default')
 const selectedRating = ref(0)
 
-const sortOptions = [
-  { value: 'default', label: 'Default Sorting' },
-  { value: 'price-asc', label: 'Price: Low to High' },
-  { value: 'price-desc', label: 'Price: High to Low' },
-  { value: 'rating', label: 'Top Rated' },
-  { value: 'newest', label: 'Newest First' },
-  { value: 'discount', label: 'Best Discount' }
-]
+const sortOptions = computed(() => [
+  { value: 'default', label: t('products.sort.default') },
+  { value: 'price-asc', label: t('products.sort.priceAsc') },
+  { value: 'price-desc', label: t('products.sort.priceDesc') },
+  { value: 'rating', label: t('products.sort.rating') },
+  { value: 'newest', label: t('products.sort.newest') },
+  { value: 'discount', label: t('products.sort.discount') }
+])
 
-const categoryLabels = {
-  all: 'All Categories',
-  fruits: 'Fruits',
-  vegetables: 'Vegetables',
-  dairy: 'Dairy & Eggs',
-  bakery: 'Bakery',
-  beverages: 'Beverages',
-  meat: 'Meat & Seafood',
-  snacks: 'Snacks',
-  frozen: 'Frozen Foods',
-  grains: 'Grains'
-}
+const categoryLabels = computed(() => ({
+  all: t('products.categories.all'),
+  fruits: t('products.categories.fruits'),
+  vegetables: t('products.categories.vegetables'),
+  dairy: t('products.categories.dairy'),
+  bakery: t('products.categories.bakery'),
+  beverages: t('products.categories.beverages'),
+  meat: t('products.categories.meat'),
+  snacks: t('products.categories.snacks'),
+  frozen: t('products.categories.frozen'),
+  grains: t('products.categories.grains')
+}))
 
 const activeFilterChips = computed(() => {
   const chips = []
   if (localCategory.value !== 'all') {
-    chips.push({ key: 'category', label: categoryLabels[localCategory.value] || localCategory.value })
+    chips.push({ key: 'category', label: categoryLabels.value[localCategory.value] || localCategory.value })
   }
   if (localSort.value !== 'default') {
-    const opt = sortOptions.find(s => s.value === localSort.value)
+    const opt = sortOptions.value.find(s => s.value === localSort.value)
     chips.push({ key: 'sort', label: opt?.label || localSort.value })
   }
   if (selectedRating.value > 0) {
-    chips.push({ key: 'rating', label: `${selectedRating.value}+ Stars` })
+    chips.push({ key: 'rating', label: t('products.stars', { n: selectedRating.value }) })
   }
   return chips
 })
@@ -146,12 +148,12 @@ watch(() => route.query, () => {
     <div class="bg-white border-b border-gray-100">
       <div class="container-custom py-3">
         <nav class="flex items-center gap-2 text-sm text-gray-500">
-          <RouterLink to="/" class="hover:text-primary-600 transition-colors duration-200">Home</RouterLink>
+          <RouterLink to="/" class="hover:text-primary-600 transition-colors duration-200">{{ t('home') }}</RouterLink>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
           </svg>
           <span class="text-gray-900 font-medium">
-            {{ localCategory !== 'all' ? (categoryLabels[localCategory] || 'Products') : 'All Products' }}
+            {{ localCategory !== 'all' ? (categoryLabels[localCategory] || t('products.title')) : t('products.title') }}
           </span>
         </nav>
       </div>
@@ -178,7 +180,7 @@ watch(() => route.query, () => {
         >
           <!-- Sidebar header (mobile) -->
           <div class="flex items-center justify-between mb-5 lg:hidden">
-            <h3 class="font-bold text-gray-900">Filters</h3>
+            <h3 class="font-bold text-gray-900">{{ t('products.filters') }}</h3>
             <button @click="isSidebarOpen = false" class="p-1 hover:bg-gray-100 rounded">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -188,7 +190,7 @@ watch(() => route.query, () => {
 
           <!-- Filter: Categories -->
           <div class="mb-6">
-            <h4 class="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wider">Categories</h4>
+            <h4 class="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wider">{{ t('products.categories') }}</h4>
             <div class="space-y-1">
               <button
                 v-for="(label, slug) in categoryLabels"
@@ -208,7 +210,7 @@ watch(() => route.query, () => {
 
           <!-- Filter: Price Range -->
           <div class="mb-6">
-            <h4 class="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wider">Price Range</h4>
+            <h4 class="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wider">{{ t('products.priceRange') }}</h4>
             <div class="space-y-3">
               <div class="flex items-center justify-between text-sm text-gray-600">
                 <span>${{ localMinPrice }}</span>
@@ -240,7 +242,7 @@ watch(() => route.query, () => {
 
           <!-- Filter: Rating -->
           <div class="mb-6">
-            <h4 class="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wider">Rating</h4>
+            <h4 class="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wider">{{ t('products.rating') }}</h4>
             <div class="space-y-1">
               <button
                 v-for="star in [4, 3, 2, 1]"
@@ -258,7 +260,7 @@ watch(() => route.query, () => {
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                   </svg>
                 </div>
-                <span>{{ star }}+ Stars</span>
+                <span>{{ t('products.stars', { n: star }) }}</span>
               </button>
             </div>
           </div>
@@ -268,7 +270,7 @@ watch(() => route.query, () => {
             @click="applyFilters"
             class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 rounded-xl transition-colors duration-200"
           >
-            Apply Filters
+            {{ t('products.applyFilters') }}
           </button>
         </aside>
 
@@ -285,10 +287,10 @@ watch(() => route.query, () => {
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.553.894l-4 2A1 1 0 016 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
                 </svg>
-                Filters
+                {{ t('products.filters') }}
               </button>
               <p class="text-gray-500 text-sm">
-                <span class="font-semibold text-gray-900">{{ pagination.total }}</span> products found
+                <span class="font-semibold text-gray-900">{{ pagination.total }}</span> {{ t('products.found', { n: '' }).replace('{n} ', '') }}
               </p>
             </div>
 
@@ -304,7 +306,7 @@ watch(() => route.query, () => {
 
           <!-- Active filter chips -->
           <div v-if="activeFilterChips.length > 0" class="flex items-center gap-2 flex-wrap mb-4">
-            <span class="text-xs text-gray-500">Active filters:</span>
+            <span class="text-xs text-gray-500">{{ t('products.activeFilters') }}</span>
             <span
               v-for="chip in activeFilterChips"
               :key="chip.key"
@@ -318,7 +320,7 @@ watch(() => route.query, () => {
               </button>
             </span>
             <button @click="clearAllFilters" class="text-xs text-red-500 hover:text-red-700 font-medium">
-              Clear all
+              {{ t('products.clearAll') }}
             </button>
           </div>
 
@@ -342,7 +344,7 @@ watch(() => route.query, () => {
           <!-- Error state -->
           <div v-else-if="error" class="text-center py-16 text-red-500">
             <p>{{ error }}</p>
-            <button @click="loadProducts()" class="mt-4 text-primary-600 underline">Try Again</button>
+            <button @click="loadProducts()" class="mt-4 text-primary-600 underline">{{ t('products.tryAgain') }}</button>
           </div>
 
           <!-- Empty state -->
@@ -352,8 +354,8 @@ watch(() => route.query, () => {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-            <p class="text-gray-500 text-lg">No products found</p>
-            <button @click="clearAllFilters" class="mt-3 text-primary-600 hover:underline font-medium">Clear all filters</button>
+            <p class="text-gray-500 text-lg">{{ t('products.noProducts') }}</p>
+            <button @click="clearAllFilters" class="mt-3 text-primary-600 hover:underline font-medium">{{ t('products.clearAllFilters') }}</button>
           </div>
 
           <!-- Products grid -->

@@ -1,5 +1,8 @@
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const email = ref('')
 const isSubmitted = ref(false)
@@ -48,10 +51,10 @@ async function handleSubmit() {
 
         <!-- Headline -->
         <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-3">
-          Subscribe to Our Newsletter
+          {{ t('sections.newsletter.title') }}
         </h2>
         <p class="text-primary-100 text-lg mb-2">
-          Get the latest deals, recipes, and grocery tips delivered to your inbox.
+          {{ t('sections.newsletter.subtitle') }}
         </p>
         <div class="inline-flex items-center gap-2 bg-yellow-400 text-yellow-900 font-bold text-sm px-4 py-1.5 rounded-full mb-8">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -81,7 +84,7 @@ async function handleSubmit() {
             <input
               v-model="email"
               type="email"
-              placeholder="Enter your email address..."
+              :placeholder="t('sections.newsletter.placeholder')"
               class="w-full px-5 py-3.5 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50 bg-white shadow-sm"
               :class="{ 'ring-2 ring-red-300': error }"
             />
@@ -96,7 +99,7 @@ async function handleSubmit() {
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            {{ isLoading ? 'Subscribing...' : 'Subscribe' }}
+            {{ isLoading ? '...' : t('sections.newsletter.subscribe') }}
           </button>
         </form>
 

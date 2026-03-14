@@ -1,11 +1,13 @@
 <script setup>
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import SearchBar from '@/components/ui/SearchBar.vue'
 import { useCart } from '@/composables/useCart'
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
 
+const { t, locale } = useI18n()
 const { totalItems, toggleCart } = useCart()
 const authStore = useAuthStore()
 const { isLoggedIn, userName, userInitials } = storeToRefs(authStore)
@@ -13,6 +15,11 @@ const { isLoggedIn, userName, userInitials } = storeToRefs(authStore)
 const wishlistCount = ref(0)
 const mobileMenuOpen = ref(false)
 const mobileSearchOpen = ref(false)
+
+function switchLocale(lang) {
+  locale.value = lang
+  localStorage.setItem('locale', lang)
+}
 </script>
 
 <template>
@@ -50,6 +57,28 @@ const mobileSearchOpen = ref(false)
             </svg>
           </button>
 
+          <!-- Language switcher -->
+          <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden text-xs font-semibold flex-shrink-0">
+            <button
+              @click="switchLocale('en')"
+              :class="[
+                'px-2 py-1.5 transition-colors duration-200',
+                locale === 'en' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-50'
+              ]"
+            >
+              EN
+            </button>
+            <button
+              @click="switchLocale('vi')"
+              :class="[
+                'px-2 py-1.5 transition-colors duration-200',
+                locale === 'vi' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-50'
+              ]"
+            >
+              VI
+            </button>
+          </div>
+
           <!-- Account -->
           <RouterLink
             :to="isLoggedIn ? '/account' : '/login'"
@@ -61,7 +90,7 @@ const mobileSearchOpen = ref(false)
             <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            <span class="text-xs mt-0.5 hidden lg:block">{{ isLoggedIn ? (userName || 'Account') : 'Sign In' }}</span>
+            <span class="text-xs mt-0.5 hidden lg:block">{{ isLoggedIn ? (userName || t('header.account')) : t('header.signIn') }}</span>
           </RouterLink>
 
           <!-- Wishlist -->
@@ -72,7 +101,7 @@ const mobileSearchOpen = ref(false)
             <span v-if="wishlistCount > 0" class="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
               {{ wishlistCount }}
             </span>
-            <span class="text-xs mt-0.5 hidden lg:block">Wishlist</span>
+            <span class="text-xs mt-0.5 hidden lg:block">{{ t('header.wishlist') }}</span>
           </button>
 
           <!-- Cart button -->
@@ -84,7 +113,7 @@ const mobileSearchOpen = ref(false)
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
-            <span class="hidden sm:inline text-sm font-medium">Cart</span>
+            <span class="hidden sm:inline text-sm font-medium">{{ t('header.cart') }}</span>
             <span
               v-if="totalItems > 0"
               class="inline-flex items-center justify-center w-5 h-5 bg-accent-500 text-white text-xs font-bold rounded-full"

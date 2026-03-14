@@ -1,33 +1,35 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const router = useRouter()
 const isAllCategoriesOpen = ref(false)
 
-const navCategories = [
-  { name: 'Fruits & Veg', slug: 'fruits', icon: '🍎' },
-  { name: 'Dairy & Eggs', slug: 'dairy', icon: '🥛' },
-  { name: 'Bakery', slug: 'bakery', icon: '🍞' },
-  { name: 'Beverages', slug: 'beverages', icon: '🥤' },
-  { name: 'Meat & Seafood', slug: 'meat', icon: '🥩' },
-  { name: 'Snacks', slug: 'snacks', icon: '🍿' },
-  { name: 'Frozen', slug: 'frozen', icon: '🧊' },
-  { name: 'Organic', slug: 'organic', icon: '🌿' }
-]
+const navCategories = computed(() => [
+  { name: t('nav.categories.fruits'), slug: 'fruits', icon: '🍎' },
+  { name: t('nav.categories.dairy'), slug: 'dairy', icon: '🥛' },
+  { name: t('nav.categories.bakery'), slug: 'bakery', icon: '🍞' },
+  { name: t('nav.categories.beverages'), slug: 'beverages', icon: '🥤' },
+  { name: t('nav.categories.meat'), slug: 'meat', icon: '🥩' },
+  { name: t('nav.categories.snacks'), slug: 'snacks', icon: '🍿' },
+  { name: t('nav.categories.frozen'), slug: 'frozen', icon: '🧊' },
+  { name: t('nav.categories.organic'), slug: 'organic', icon: '🌿' }
+])
 
-const allCategoriesMenu = [
-  { name: 'Fruits', slug: 'fruits', icon: '🍎' },
-  { name: 'Vegetables', slug: 'vegetables', icon: '🥦' },
-  { name: 'Dairy & Eggs', slug: 'dairy', icon: '🥛' },
-  { name: 'Bakery', slug: 'bakery', icon: '🍞' },
-  { name: 'Beverages', slug: 'beverages', icon: '🥤' },
-  { name: 'Meat & Seafood', slug: 'meat', icon: '🥩' },
-  { name: 'Snacks', slug: 'snacks', icon: '🍿' },
-  { name: 'Frozen Foods', slug: 'frozen', icon: '🧊' },
-  { name: 'Grains & Rice', slug: 'grains', icon: '🌾' },
-  { name: 'Organic', slug: 'organic', icon: '🌿' }
-]
+const allCategoriesMenu = computed(() => [
+  { name: t('nav.categories.fruits'), slug: 'fruits', icon: '🍎' },
+  { name: t('nav.categories.vegetables'), slug: 'vegetables', icon: '🥦' },
+  { name: t('nav.categories.dairy'), slug: 'dairy', icon: '🥛' },
+  { name: t('nav.categories.bakery'), slug: 'bakery', icon: '🍞' },
+  { name: t('nav.categories.beverages'), slug: 'beverages', icon: '🥤' },
+  { name: t('nav.categories.meat'), slug: 'meat', icon: '🥩' },
+  { name: t('nav.categories.snacks'), slug: 'snacks', icon: '🍿' },
+  { name: t('nav.categories.frozenFoods'), slug: 'frozen', icon: '🧊' },
+  { name: t('nav.categories.grainsRice'), slug: 'grains', icon: '🌾' },
+  { name: t('nav.categories.organic'), slug: 'organic', icon: '🌿' }
+])
 
 function navigateToCategory(slug) {
   isAllCategoriesOpen.value = false
@@ -53,7 +55,7 @@ function closeDropdown() {
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
-            <span class="hidden sm:inline">All Categories</span>
+            <span class="hidden sm:inline">{{ t('nav.allCategories') }}</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-180': isAllCategoriesOpen }" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
             </svg>
@@ -90,7 +92,7 @@ function closeDropdown() {
             to="/products"
             class="flex-shrink-0 px-3 h-11 flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors duration-200 whitespace-nowrap border-b-2 border-transparent hover:border-primary-600"
           >
-            All Products
+            {{ t('nav.allProducts') }}
           </RouterLink>
           <RouterLink
             v-for="cat in navCategories"
@@ -110,7 +112,7 @@ function closeDropdown() {
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
             </svg>
-            Flash Deals
+            {{ t('nav.flashDeals') }}
           </RouterLink>
         </div>
       </div>

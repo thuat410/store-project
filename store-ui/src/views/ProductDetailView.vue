@@ -1,11 +1,14 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import ProductCard from '@/components/ui/ProductCard.vue'
 import QuantitySelector from '@/components/ui/QuantitySelector.vue'
 import Badge from '@/components/ui/Badge.vue'
 import { useCart } from '@/composables/useCart'
 import { getProductById, getRelatedProducts } from '@/services/products'
+
+const { t } = useI18n()
 
 const route = useRoute()
 const { addToCart } = useCart()
@@ -19,12 +22,12 @@ const activeTab = ref('description')
 const isWishlisted = ref(false)
 const isAdding = ref(false)
 
-const tabs = [
-  { key: 'description', label: 'Description' },
-  { key: 'nutrition', label: 'Nutrition Info' },
-  { key: 'reviews', label: 'Reviews' },
-  { key: 'shipping', label: 'Shipping' }
-]
+const tabs = computed(() => [
+  { key: 'description', label: t('productDetail.tabs.description') },
+  { key: 'nutrition', label: t('productDetail.tabs.nutrition') },
+  { key: 'reviews', label: t('productDetail.tabs.reviews') },
+  { key: 'shipping', label: t('productDetail.tabs.shipping') }
+])
 
 const savingsAmount = computed(() => {
   if (!product.value || !product.value.discount) return 0
@@ -88,15 +91,15 @@ watch(() => route.params.id, () => {
     <div class="bg-white border-b border-gray-100">
       <div class="container-custom py-3">
         <nav class="flex items-center gap-2 text-sm text-gray-500">
-          <RouterLink to="/" class="hover:text-primary-600">Home</RouterLink>
+          <RouterLink to="/" class="hover:text-primary-600">{{ t('home') }}</RouterLink>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
           </svg>
-          <RouterLink to="/products" class="hover:text-primary-600">Products</RouterLink>
+          <RouterLink to="/products" class="hover:text-primary-600">{{ t('productDetail.products') }}</RouterLink>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
           </svg>
-          <span class="text-gray-900 font-medium line-clamp-1">{{ product?.name || 'Product' }}</span>
+          <span class="text-gray-900 font-medium line-clamp-1">{{ product ? (product.nameKey ? t(product.nameKey) : product.name) : 'Product' }}</span>
         </nav>
       </div>
     </div>
@@ -118,7 +121,7 @@ watch(() => route.params.id, () => {
     <!-- Error state -->
     <div v-else-if="error" class="container-custom py-20 text-center">
       <p class="text-red-500 text-xl mb-4">{{ error }}</p>
-      <RouterLink to="/products" class="btn-primary">Back to Products</RouterLink>
+      <RouterLink to="/products" class="btn-primary">{{ t('productDetail.backToProducts') }}</RouterLink>
     </div>
 
     <!-- Product detail -->
@@ -157,14 +160,14 @@ watch(() => route.params.id, () => {
             <Badge v-if="product.isOrganic" type="organic" />
             <span v-if="product.stock > 0" class="inline-flex items-center gap-1 text-xs font-medium text-green-700 bg-green-50 px-2.5 py-1 rounded-full">
               <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-              In Stock ({{ product.stock }})
+              {{ t('productDetail.inStock') }} ({{ product.stock }})
             </span>
-            <span v-else class="text-xs font-medium text-red-700 bg-red-50 px-2.5 py-1 rounded-full">Out of Stock</span>
+            <span v-else class="text-xs font-medium text-red-700 bg-red-50 px-2.5 py-1 rounded-full">{{ t('productDetail.outOfStock') }}</span>
           </div>
 
           <!-- Name & Brand -->
           <div>
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-1">{{ product.name }}</h1>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-1">{{ product.nameKey ? t(product.nameKey) : product.name }}</h1>
             <p class="text-gray-500">by <span class="text-primary-600 font-medium">{{ product.brand }}</span></p>
           </div>
 
@@ -188,21 +191,21 @@ watch(() => route.params.id, () => {
               <span v-if="product.discount > 0" class="text-lg text-gray-400 line-through">${{ product.originalPrice.toFixed(2) }}</span>
             </div>
             <p v-if="product.discount > 0" class="text-sm text-green-600 font-medium mt-1">
-              You save ${{ savingsAmount }} ({{ product.discount }}% off!)
+              {{ t('productDetail.youSave', { amount: savingsAmount, discount: product.discount }) }}
             </p>
-            <p class="text-gray-500 text-sm mt-1">per {{ product.unit }}</p>
+            <p class="text-gray-500 text-sm mt-1">{{ t('productDetail.per') }} {{ product.unit }}</p>
           </div>
 
           <!-- Quantity & Add to cart -->
           <div class="space-y-3">
-            <p class="text-sm font-medium text-gray-700">Quantity</p>
+            <p class="text-sm font-medium text-gray-700">{{ t('productDetail.quantity') }}</p>
             <div class="flex items-center gap-4">
               <QuantitySelector
                 v-model="quantity"
                 :max="product.stock"
                 size="lg"
               />
-              <span class="text-sm text-gray-400">Max: {{ product.stock }}</span>
+              <span class="text-sm text-gray-400">{{ t('productDetail.max') }} {{ product.stock }}</span>
             </div>
 
             <div class="flex gap-3">
@@ -218,7 +221,7 @@ watch(() => route.params.id, () => {
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                {{ isAdding ? 'Adding to Cart...' : 'Add to Cart' }}
+                {{ isAdding ? t('productDetail.addingToCart') : t('productDetail.addToCart') }}
               </button>
               <button
                 @click="toggleWishlist"
@@ -240,17 +243,17 @@ watch(() => route.params.id, () => {
           <!-- Product meta -->
           <div class="border-t border-gray-100 pt-4 space-y-2 text-sm">
             <div class="flex items-center gap-2">
-              <span class="text-gray-500 w-24">Category:</span>
+              <span class="text-gray-500 w-24">{{ t('productDetail.category') }}</span>
               <RouterLink :to="`/products?category=${product.category}`" class="text-primary-600 hover:underline capitalize">
                 {{ product.category }}
               </RouterLink>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-gray-500 w-24">Brand:</span>
+              <span class="text-gray-500 w-24">{{ t('productDetail.brand') }}</span>
               <span class="text-gray-900">{{ product.brand }}</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-gray-500 w-24">Unit:</span>
+              <span class="text-gray-500 w-24">{{ t('productDetail.unit') }}</span>
               <span class="text-gray-900">{{ product.unit }}</span>
             </div>
           </div>
@@ -262,13 +265,13 @@ watch(() => route.params.id, () => {
                 <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
                 <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z" />
               </svg>
-              <span><strong>Same-day delivery</strong> for orders before 2pm</span>
+              <span>{{ t('productDetail.sameDayDelivery') }}</span>
             </div>
             <div class="flex items-center gap-2 text-sm text-green-700">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
               </svg>
-              <span>Free delivery on orders over $50</span>
+              <span>{{ t('productDetail.freeDelivery') }}</span>
             </div>
           </div>
         </div>
@@ -295,25 +298,25 @@ watch(() => route.params.id, () => {
         <div class="p-6">
           <!-- Description tab -->
           <div v-if="activeTab === 'description'" class="prose max-w-none text-gray-600">
-            <p class="text-base leading-relaxed">{{ product.description }}</p>
+            <p class="text-base leading-relaxed">{{ product.descKey ? t(product.descKey) : product.description }}</p>
             <ul class="mt-4 space-y-2">
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-primary-600 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
-                Fresh, high-quality product from trusted sources
+                {{ t('productDetail.descBullets.fresh') }}
               </li>
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-primary-600 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
-                No artificial additives or preservatives
+                {{ t('productDetail.descBullets.noAdditives') }}
               </li>
               <li class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-primary-600 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
-                Sustainably sourced and packaged
+                {{ t('productDetail.descBullets.sustainable') }}
               </li>
             </ul>
           </div>
@@ -322,9 +325,9 @@ watch(() => route.params.id, () => {
           <div v-else-if="activeTab === 'nutrition'" class="text-gray-600">
             <div class="max-w-sm">
               <div class="border border-gray-200 rounded-lg overflow-hidden">
-                <div class="bg-gray-900 text-white text-center py-2 font-bold text-lg">Nutrition Facts</div>
+                <div class="bg-gray-900 text-white text-center py-2 font-bold text-lg">{{ t('productDetail.nutrition.title') }}</div>
                 <div class="p-4 border-b border-gray-800">
-                  <p class="text-sm text-gray-500">Serving Size: 1 {{ product.unit }}</p>
+                  <p class="text-sm text-gray-500">{{ t('productDetail.nutrition.servingSize') }} {{ product.unit }}</p>
                 </div>
                 <div class="divide-y divide-gray-100">
                   <div v-for="nutrient in [
@@ -397,9 +400,9 @@ watch(() => route.params.id, () => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div
                 v-for="option in [
-                  { icon: '🚀', name: 'Express Delivery', desc: 'Order by 2pm for same-day delivery', price: '$4.99', highlight: false },
-                  { icon: '🚚', name: 'Standard Delivery', desc: '2-3 business days', price: '$2.99', highlight: false },
-                  { icon: '🎁', name: 'Free Delivery', desc: 'Orders over $50 qualify for free delivery', price: 'FREE', highlight: true }
+                  { icon: '🚀', name: t('productDetail.delivery.express'), desc: t('productDetail.delivery.expressDesc'), price: '$4.99', highlight: false },
+                  { icon: '🚚', name: t('productDetail.delivery.standard'), desc: t('productDetail.delivery.standardDesc'), price: '$2.99', highlight: false },
+                  { icon: '🎁', name: t('productDetail.delivery.free'), desc: t('productDetail.delivery.freeDesc'), price: 'FREE', highlight: true }
                 ]"
                 :key="option.name"
                 :class="[
@@ -421,7 +424,7 @@ watch(() => route.params.id, () => {
 
       <!-- Related Products -->
       <div v-if="relatedProducts.length > 0" class="mb-8">
-        <h2 class="section-title mb-5">Related Products</h2>
+        <h2 class="section-title mb-5">{{ t('productDetail.relatedProducts') }}</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           <ProductCard
             v-for="rProduct in relatedProducts"

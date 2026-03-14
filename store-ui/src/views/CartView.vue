@@ -1,10 +1,12 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import QuantitySelector from '@/components/ui/QuantitySelector.vue'
 import { useCart } from '@/composables/useCart'
 import { claimVoucher } from '@/services/voucher'
 
+const { t } = useI18n()
 const router = useRouter()
 const { items, totalItems, totalPrice, formattedTotal, isEmpty, removeFromCart, updateItemQuantity, clearCart } = useCart()
 
@@ -65,19 +67,19 @@ function handleImageError(e) {
     <div class="bg-white border-b border-gray-100">
       <div class="container-custom py-3">
         <nav class="flex items-center gap-2 text-sm text-gray-500">
-          <RouterLink to="/" class="hover:text-primary-600">Home</RouterLink>
+          <RouterLink to="/" class="hover:text-primary-600">{{ t('home') }}</RouterLink>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
           </svg>
-          <span class="text-gray-900 font-medium">Shopping Cart</span>
+          <span class="text-gray-900 font-medium">{{ t('cart.title') }}</span>
         </nav>
       </div>
     </div>
 
     <div class="container-custom py-8">
       <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
-        Shopping Cart
-        <span class="text-base font-normal text-gray-500 ml-2">({{ totalItems }} {{ totalItems === 1 ? 'item' : 'items' }})</span>
+        {{ t('cart.title') }}
+        <span class="text-base font-normal text-gray-500 ml-2">({{ totalItems }} {{ totalItems === 1 ? t('cart.item') : t('cart.items') }})</span>
       </h1>
 
       <!-- Empty cart -->
@@ -87,10 +89,10 @@ function handleImageError(e) {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
           </svg>
         </div>
-        <h2 class="text-xl font-semibold text-gray-700 mb-2">Your cart is empty</h2>
-        <p class="text-gray-400 mb-6">Looks like you haven't added any groceries yet.</p>
+        <h2 class="text-xl font-semibold text-gray-700 mb-2">{{ t('cart.emptyTitle') }}</h2>
+        <p class="text-gray-400 mb-6">{{ t('cart.emptyDesc') }}</p>
         <RouterLink to="/products" class="btn-primary px-8 py-3 rounded-xl text-base">
-          Start Shopping
+          {{ t('cart.startShopping') }}
         </RouterLink>
       </div>
 
@@ -100,10 +102,10 @@ function handleImageError(e) {
         <div class="lg:col-span-2 space-y-3">
           <!-- Header row (desktop) -->
           <div class="hidden md:grid grid-cols-12 gap-4 bg-white rounded-xl px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-            <div class="col-span-6">Product</div>
-            <div class="col-span-2 text-center">Price</div>
-            <div class="col-span-2 text-center">Quantity</div>
-            <div class="col-span-2 text-right">Subtotal</div>
+            <div class="col-span-6">{{ t('cart.product') }}</div>
+            <div class="col-span-2 text-center">{{ t('cart.price') }}</div>
+            <div class="col-span-2 text-center">{{ t('cart.quantity') }}</div>
+            <div class="col-span-2 text-right">{{ t('cart.subtotal') }}</div>
           </div>
 
           <!-- Items -->
@@ -115,7 +117,6 @@ function handleImageError(e) {
             <div class="grid grid-cols-12 gap-4 items-center">
               <!-- Product (image + name) -->
               <div class="col-span-12 md:col-span-6 flex items-center gap-3">
-                <!-- Remove button (mobile) -->
                 <button
                   @click="removeFromCart(item.id)"
                   class="flex-shrink-0 w-6 h-6 rounded-full bg-gray-100 hover:bg-red-100 hover:text-red-500 text-gray-400 flex items-center justify-center transition-colors duration-200"
@@ -129,7 +130,7 @@ function handleImageError(e) {
                 <div class="w-16 h-16 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100">
                   <img
                     :src="item.image"
-                    :alt="item.name"
+                    :alt="item.nameKey ? t(item.nameKey) : item.name"
                     class="w-full h-full object-cover"
                     @error="handleImageError"
                   />
@@ -137,7 +138,7 @@ function handleImageError(e) {
 
                 <div class="min-w-0">
                   <RouterLink :to="`/products/${item.id}`" class="font-semibold text-gray-900 hover:text-primary-600 transition-colors duration-200 line-clamp-2 text-sm">
-                    {{ item.name }}
+                    {{ item.nameKey ? t(item.nameKey) : item.name }}
                   </RouterLink>
                   <p class="text-xs text-gray-400">{{ item.brand }} &bull; {{ item.unit }}</p>
                 </div>
@@ -145,7 +146,7 @@ function handleImageError(e) {
 
               <!-- Price -->
               <div class="col-span-4 md:col-span-2 text-sm text-gray-600 md:text-center">
-                <span class="md:hidden text-gray-400 text-xs mr-1">Price:</span>
+                <span class="md:hidden text-gray-400 text-xs mr-1">{{ t('cart.price') }}:</span>
                 ${{ item.price.toFixed(2) }}
               </div>
 
@@ -172,21 +173,21 @@ function handleImageError(e) {
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
               </svg>
-              Continue Shopping
+              {{ t('cart.continueShopping') }}
             </RouterLink>
             <button @click="clearCart" class="text-sm text-red-500 hover:text-red-700 font-medium transition-colors duration-200">
-              Clear Cart
+              {{ t('cart.clearCart') }}
             </button>
           </div>
 
           <!-- Coupon section -->
           <div class="bg-white rounded-xl p-4 shadow-sm">
-            <h3 class="font-semibold text-gray-900 mb-3 text-sm">Have a Coupon Code?</h3>
+            <h3 class="font-semibold text-gray-900 mb-3 text-sm">{{ t('cart.haveCoupon') }}</h3>
             <div v-if="couponStatus !== 'applied'" class="flex gap-2">
               <input
                 v-model="couponCode"
                 type="text"
-                placeholder="Enter coupon code..."
+                :placeholder="t('cart.enterCoupon')"
                 class="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 uppercase"
                 @keydown.enter="applyCoupon"
               />
@@ -195,7 +196,7 @@ function handleImageError(e) {
                 :disabled="couponStatus === 'checking'"
                 class="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors duration-200 disabled:opacity-60"
               >
-                {{ couponStatus === 'checking' ? 'Checking...' : 'Apply' }}
+                {{ couponStatus === 'checking' ? t('cart.checking') : t('cart.apply') }}
               </button>
             </div>
             <div v-if="couponStatus === 'error'" class="text-red-500 text-xs mt-2">{{ couponError }}</div>
@@ -206,7 +207,7 @@ function handleImageError(e) {
                 </svg>
                 <span class="text-sm font-medium">{{ discountLabel }}</span>
               </div>
-              <button @click="removeCoupon" class="text-xs text-red-500 hover:text-red-700 font-medium">Remove</button>
+              <button @click="removeCoupon" class="text-xs text-red-500 hover:text-red-700 font-medium">{{ t('cart.remove') }}</button>
             </div>
           </div>
         </div>
@@ -214,30 +215,30 @@ function handleImageError(e) {
         <!-- Order summary sidebar -->
         <div class="lg:col-span-1">
           <div class="bg-white rounded-2xl shadow-sm p-5 sticky top-24">
-            <h2 class="font-bold text-gray-900 text-lg mb-4">Order Summary</h2>
+            <h2 class="font-bold text-gray-900 text-lg mb-4">{{ t('cart.orderSummary') }}</h2>
 
             <div class="space-y-3 text-sm">
               <div class="flex justify-between text-gray-600">
-                <span>Subtotal ({{ totalItems }} items)</span>
+                <span>{{ t('cart.subtotal') }} ({{ totalItems }} {{ totalItems === 1 ? t('cart.item') : t('cart.items') }})</span>
                 <span class="font-medium text-gray-900">{{ formattedTotal }}</span>
               </div>
 
               <div class="flex justify-between text-gray-600">
-                <span>Shipping</span>
+                <span>{{ t('cart.shipping') }}</span>
                 <span :class="shippingCost === 0 ? 'text-primary-600 font-medium' : 'text-gray-900'">
-                  {{ shippingCost === 0 ? 'FREE' : `$${shippingCost.toFixed(2)}` }}
+                  {{ shippingCost === 0 ? t('cart.free') : `$${shippingCost.toFixed(2)}` }}
                 </span>
               </div>
 
               <div v-if="discount > 0" class="flex justify-between text-green-600">
-                <span>Discount</span>
+                <span>{{ t('cart.discount') }}</span>
                 <span>-${{ discount.toFixed(2) }}</span>
               </div>
 
               <!-- Free shipping progress -->
               <div v-if="totalPrice < 50" class="bg-green-50 rounded-xl p-3">
                 <p class="text-xs text-green-700 mb-1.5">
-                  Add <strong>${{ (50 - totalPrice).toFixed(2) }}</strong> more for free shipping!
+                  {{ t('cart.addMoreForFreeShipping', { amount: (50 - totalPrice).toFixed(2) }) }}
                 </p>
                 <div class="w-full bg-green-200 rounded-full h-1.5">
                   <div
@@ -248,7 +249,7 @@ function handleImageError(e) {
               </div>
 
               <div class="border-t border-gray-100 pt-3 flex justify-between">
-                <span class="text-base font-bold text-gray-900">Total</span>
+                <span class="text-base font-bold text-gray-900">{{ t('cart.total') }}</span>
                 <span class="text-xl font-extrabold text-primary-600">${{ orderTotal }}</span>
               </div>
             </div>
@@ -257,7 +258,7 @@ function handleImageError(e) {
               @click="handleCheckout"
               class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 rounded-xl mt-5 transition-colors duration-200 flex items-center justify-center gap-2 text-base"
             >
-              Proceed to Checkout
+              {{ t('cart.proceedToCheckout') }}
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
               </svg>
@@ -265,7 +266,7 @@ function handleImageError(e) {
 
             <!-- Payment icons -->
             <div class="mt-4 text-center">
-              <p class="text-xs text-gray-400 mb-2">Secure payment methods</p>
+              <p class="text-xs text-gray-400 mb-2">{{ t('cart.securePayment') }}</p>
               <div class="flex items-center justify-center gap-2">
                 <div class="bg-gray-100 rounded px-2 py-1 text-xs font-bold text-blue-800">VISA</div>
                 <div class="bg-gray-100 rounded px-2 py-1 text-xs font-bold text-red-600">MC</div>

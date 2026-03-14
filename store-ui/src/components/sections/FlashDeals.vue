@@ -1,9 +1,12 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import ProductCard from '@/components/ui/ProductCard.vue'
 import FlashSaleTimer from '@/components/ui/FlashSaleTimer.vue'
 import { useProducts } from '@/composables/useProducts'
+
+const { t } = useI18n()
 
 const { flashDeals, loadingFlashDeals, loadFlashDeals } = useProducts()
 const scrollContainer = ref(null)
@@ -41,14 +44,14 @@ function scrollRight() {
                 </svg>
               </div>
               <div>
-                <h2 class="text-2xl md:text-3xl font-extrabold text-white">Flash Deals</h2>
-                <p class="text-orange-100 text-sm">Hurry! Deals expire soon</p>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-white">{{ t('sections.flashDeals.title') }}</h2>
+                <p class="text-orange-100 text-sm">{{ t('sections.flashDeals.subtitle') }}</p>
               </div>
             </div>
 
             <!-- Timer -->
             <div class="flex items-center gap-2">
-              <span class="text-white/80 text-sm font-medium">Ends in:</span>
+              <span class="text-white/80 text-sm font-medium">{{ t('sections.flashDeals.endsIn') }}</span>
               <FlashSaleTimer :duration-hours="6" theme="light" size="sm" />
             </div>
           </div>
@@ -58,7 +61,7 @@ function scrollRight() {
             to="/products?sort=discount"
             class="flex-shrink-0 bg-white text-orange-600 hover:bg-orange-50 font-semibold px-5 py-2.5 rounded-xl transition-colors duration-200 flex items-center gap-2 text-sm"
           >
-            View All Deals
+            {{ t('sections.flashDeals.viewAll') }}
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
             </svg>
